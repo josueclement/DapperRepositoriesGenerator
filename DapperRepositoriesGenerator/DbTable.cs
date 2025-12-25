@@ -7,42 +7,71 @@ public class DbTable
 {
     private readonly string _tableName;
     private readonly string[] _columnNames;
+    private readonly string _parameterPrefix;
+    private readonly string _columnsQuote;
 
-    public DbTable(string tableName, params string[] columnNames)
+    public DbTable(
+        string tableName,
+        string[] columnNames,
+        string parameterPrefix = "@",
+        string columnsQuote = "`")
     {
         _tableName = tableName;
         _columnNames = columnNames;
+        _parameterPrefix = parameterPrefix;
+        _columnsQuote = columnsQuote;
     }
+    
+    public string GetAllColumns()
+        => string.Join(", ", _columnNames.Select(c => $"{_columnsQuote}{c}{_columnsQuote}"));
+
+    public string GetIdColumn()
+        => _columnNames.First();
+    
+    // public string GetColumnsWithoutId()
+    //     => string.Join(", ", _columnNames.Skip(1));
+    
+    public string GetAllParameters()
+        => string.Join(", ", _columnNames.Select(c => $"{_parameterPrefix}{c}"));
+    
+    // public string GetParametersWithoutId()
+    //     => string.Join(", ", _columnNames.Skip(1).Select(c => $"{_parameterPrefix}{c}"));
+    
+    public string GetColumnsSets()
+        => string.Join(", ", _columnNames.Skip(1).Select(c => $"{_columnsQuote}{c}{_columnsQuote} = {_parameterPrefix}{c}"));
+
+    public string GetWhereId()
+        => $"WHERE {_columnsQuote}{GetIdColumn()}{_columnsQuote} = {_parameterPrefix}{GetIdColumn()}";
 
     public string GenerateSqlRequestCreateTable()
     {
         throw new NotImplementedException();
         // return $"CREATE TABLE {_tableName} ( {string.Join(", ", _columnNames)} )";
     }
-
-    public string GenerateSqlRequestSelectById()
-    {
-        return $"SELECT {string.Join(", ", _columnNames)} FROM {_tableName} WHERE Id = @Id";
-    }
     
     public string GenerateSqlRequestSelectAll()
     {
-        return $"SELECT {string.Join(", ", _columnNames)} FROM {_tableName}";
+        return $"SELECT {GetAllColumns()} FROM {_tableName}";
+    }
+
+    public string GenerateSqlRequestSelectById()
+    {
+        return $"SELECT {GetAllColumns()} FROM {_tableName} {GetWhereId()}";
     }
 
     public string GenerateSqlRequestInsert()
     {
-        return $"INSERT INTO {_tableName} ({string.Join(", ", _columnNames)} ) VALUES ({string.Join(", ", _columnNames.Select(c => $"@{c}"))})";
+        return $"INSERT INTO {_tableName} ({GetAllColumns()}) VALUES ({GetAllParameters()})";
     }
 
     public string GenerateSqlRequestUpdate()
     {
-        return $"UPDATE {_tableName} SET {string.Join(", ", _columnNames.Select(c => $"{c} = @{c}"))} WHERE Id = @Id";
+        return $"UPDATE {_tableName} SET {GetColumnsSets()} {GetWhereId()}";
     }
 
     public string GenerateSqlRequestDelete()
     {
-        return $"DELETE FROM {_tableName} WHERE Id = @Id";
+        return $"DELETE FROM {_tableName} {GetWhereId()}";
     }
 
     public string GenerateRepository()
