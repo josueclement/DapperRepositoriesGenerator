@@ -9,9 +9,11 @@ class Program
     {
         var usersTable = new DbTable("User", ["Id", "CreationDate", "ModificationDate", "Username", "FullName", "Password"]);
         Console.WriteLine($"SelectAll: {usersTable.GenerateSqlRequestSelectAll()}");
-        Console.WriteLine($"SelectAll: {usersTable.GenerateSqlRequestSelectById()}");
-        Console.WriteLine($"SelectAll: {usersTable.GenerateSqlRequestInsert()}");
-        Console.WriteLine($"SelectAll: {usersTable.GenerateSqlRequestUpdate()}");
-        Console.WriteLine($"SelectAll: {usersTable.GenerateSqlRequestDelete()}");
+        Console.WriteLine($"SelectById: {usersTable.GenerateSqlRequestSelectById()}");
+        Console.WriteLine($"Insert: {usersTable.GenerateSqlRequestInsert()}");
+        Console.WriteLine($"Update: {usersTable.GenerateSqlRequestUpdate()}");
+        Console.WriteLine($"Delete: {usersTable.GenerateSqlRequestDelete()}");
+        Console.WriteLine("Repository:");
+        Console.WriteLine(new RepositoryGenerator(usersTable).GenerateRepository());
     }
 }

@@ -22,6 +22,9 @@ public class DbTable
         _columnsQuote = columnsQuote;
     }
     
+    public string TableName => _tableName;
+    public string[] ColumnNames => _columnNames;
+    
     public string GetAllColumns()
         => string.Join(", ", _columnNames.Select(c => $"{_columnsQuote}{c}{_columnsQuote}"));
 
@@ -51,27 +54,27 @@ public class DbTable
     
     public string GenerateSqlRequestSelectAll()
     {
-        return $"SELECT {GetAllColumns()} FROM {_tableName}";
+        return $"SELECT {GetAllColumns()} FROM {_columnsQuote}{_tableName}{_columnsQuote}";
     }
 
     public string GenerateSqlRequestSelectById()
     {
-        return $"SELECT {GetAllColumns()} FROM {_tableName} {GetWhereId()}";
+        return $"SELECT {GetAllColumns()} FROM {_columnsQuote}{_tableName}{_columnsQuote} {GetWhereId()}";
     }
 
     public string GenerateSqlRequestInsert()
     {
-        return $"INSERT INTO {_tableName} ({GetAllColumns()}) VALUES ({GetAllParameters()})";
+        return $"INSERT INTO {_columnsQuote}{_tableName}{_columnsQuote} ({GetAllColumns()}) VALUES ({GetAllParameters()})";
     }
 
     public string GenerateSqlRequestUpdate()
     {
-        return $"UPDATE {_tableName} SET {GetColumnsSets()} {GetWhereId()}";
+        return $"UPDATE {_columnsQuote}{_tableName}{_columnsQuote} SET {GetColumnsSets()} {GetWhereId()}";
     }
 
     public string GenerateSqlRequestDelete()
     {
-        return $"DELETE FROM {_tableName} {GetWhereId()}";
+        return $"DELETE FROM {_columnsQuote}{_tableName}{_columnsQuote} {GetWhereId()}";
     }
 
     public string GenerateRepository()
