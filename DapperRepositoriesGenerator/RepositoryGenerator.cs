@@ -36,7 +36,7 @@ public class RepositoryGenerator(DbTable table)
     {
         sb.AppendLine($"    public async Task<IEnumerable<{table.TableName}>> GetAllAsync()");
         sb.AppendLine("    {");
-        sb.AppendLine($@"        var sql = ""{table.GenerateSqlRequestSelectAll()}""");
+        sb.AppendLine($@"        var sql = ""{table.GenerateSqlRequestSelectAll()}"";");
         
         sb.AppendLine("        return await Connection");
         sb.AppendLine($"            .QueryAsync<{table.TableName}>(sql)");
@@ -48,7 +48,7 @@ public class RepositoryGenerator(DbTable table)
     {
         sb.AppendLine($"    public async Task<{table.TableName}?> GetByIdAsync(string id)");
         sb.AppendLine("    {");
-        sb.AppendLine($@"        var sql = ""{table.GenerateSqlRequestSelectById()}""");
+        sb.AppendLine($@"        var sql = ""{table.GenerateSqlRequestSelectById()}"";");
         
         sb.AppendLine("        return await Connection");
         sb.AppendLine($"            .QuerySingleOrDefaultAsync<{table.TableName}>(sql, new {{ Id = id }})");
@@ -60,7 +60,7 @@ public class RepositoryGenerator(DbTable table)
     {
         sb.AppendLine($"    public async Task<int> AddAsync({table.TableName} entity)");
         sb.AppendLine("    {");
-        sb.AppendLine($@"        var sql = ""{table.GenerateSqlRequestInsert()}""");
+        sb.AppendLine($@"        var sql = ""{table.GenerateSqlRequestInsert()}"";");
         
         sb.AppendLine("        return await Connection");
         sb.AppendLine("            .ExecuteAsync(sql, entity)");
@@ -72,7 +72,7 @@ public class RepositoryGenerator(DbTable table)
     {
         sb.AppendLine($"    public async Task<int> UpdateAsync({table.TableName} entity)");
         sb.AppendLine("    {");
-        sb.AppendLine($@"        var sql = ""{table.GenerateSqlRequestUpdate()}""");
+        sb.AppendLine($@"        var sql = ""{table.GenerateSqlRequestUpdate()}"";");
         
         sb.AppendLine("        return await Connection");
         sb.AppendLine("            .ExecuteAsync(sql, entity)");
@@ -84,7 +84,7 @@ public class RepositoryGenerator(DbTable table)
     {
         sb.AppendLine($"    public async Task<int> DeleteAsync({table.TableName} entity)");
         sb.AppendLine("    {");
-        sb.AppendLine($@"        var sql = ""{table.GenerateSqlRequestDelete()}""");
+        sb.AppendLine($@"        var sql = ""{table.GenerateSqlRequestDelete()}"";");
         
         sb.AppendLine("        return await Connection");
         sb.AppendLine("            .ExecuteAsync(sql, entity)");

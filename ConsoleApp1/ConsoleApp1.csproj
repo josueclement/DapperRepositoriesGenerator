@@ -11,4 +11,15 @@
       <ProjectReference Include="..\DapperRepositoriesGenerator\DapperRepositoriesGenerator.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Dapper" Version="2.1.66" />
+      <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="users.db">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>
