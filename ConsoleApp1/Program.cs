@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
+using Bogus;
 using DapperRepositoriesGenerator;
 
 namespace ConsoleApp1;
@@ -19,7 +21,26 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        await TestRepo();
+        DbProviderFactories.RegisterFactory(
+            "System.Data.SQLite",
+            "System.Data.SQLite.SQLiteFactory, System.Data.SQLite");
+        
+        await TestInsert();
+        await TestSelectAll();
+        await TestSelectById();
+        await TestUpdate();
+        await TestDelete();
+    }
+
+    static DbConnection CreateConnection()
+    {
+        var connection = DbProviderFactories.GetFactory("System.Data.SQLite").CreateConnection();
+
+        if (connection is null)
+            throw new InvalidOperationException("Cannot create connection");
+        
+        connection.ConnectionString = "Data Source=users.db";
+        return connection;
     }
 
     static void Generate()
@@ -34,29 +55,59 @@ class Program
         Console.WriteLine(new RepositoryGenerator(usersTable).GenerateRepository());
     }
 
-    static async Task TestRepo()
+    static async Task TestSelectAll()
     {
-        DbProviderFactories.RegisterFactory(
-            "System.Data.SQLite",
-            "System.Data.SQLite.SQLiteFactory, System.Data.SQLite");
-
-        await using var connection = DbProviderFactories.GetFactory("System.Data.SQLite").CreateConnection();
-        connection.ConnectionString = "Data Source=users.db";
+        await using var connection = CreateConnection();
         await connection.OpenAsync();
-
-        var user = new User();
-        user.Id = Guid.NewGuid().ToString();
-        user.CreationDate = DateTime.Now.ToString("O");
-        user.ModificationDate = DateTime.Now.AddDays(-4).ToString("O");
-        user.Username = "jimi";
-        user.FullName = "Jimi Hendrix";
-        user.Password = "H3yJo3";
-        
         var repo = new UserRepository(connection);
-        // var addRes = await repo.AddAsync(user);
         var users = await repo.GetAllAsync();
-        
         await connection.CloseAsync();
+    }
+
+    static async Task TestSelectById()
+    {
+    }
+
+    static async Task TestInsert()
+    {
+        await using var connection = CreateConnection();
+        await connection.OpenAsync();
+        var repo = new UserRepository(connection);
+        
+        var faker = new Faker<User>()
+            .CustomInstantiator(f =>
+            {
+                var firstName = f.Name.FirstName();
+                var lastName = f.Name.LastName();
+
+                return new User()
+                {
+                    Id = Ulid.NewUlid().ToString(),
+                    CreationDate = f.Date.Past(5).ToString("O"),
+                    ModificationDate = f.Date.Past(1).ToString("O"),
+                    Username = f.Internet.UserName(firstName, lastName),
+                    FullName = firstName + " " + lastName,
+                    Password = f.Internet.Email(firstName, lastName)
+                };
+            });
+
+        var people = faker.Generate(10);
+
+        foreach (var person in people)
+        {
+            await repo.AddAsync(person);
+        }
+        await connection.CloseAsync();
+    }
+
+    static async Task TestUpdate()
+    {
+        
+    }
+
+    static async Task TestDelete()
+    {
+        
     }
 }
 
