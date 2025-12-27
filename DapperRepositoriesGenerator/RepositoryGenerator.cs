@@ -15,7 +15,6 @@ public class RepositoryGenerator(DbTable table, SqlGenerator sqlGenerator)
 
         var scriptObject = new ScriptObject();
         scriptObject.Add("RepositoryNamespace", repositoryNamespace);
-        scriptObject.Add("RepositoryName", "");
         scriptObject.Add("TableName", table.TableName);
         scriptObject.Add("SelectAllRequest", sqlGenerator.GenerateSelectAll());
         scriptObject.Add("SelectByIdRequest", sqlGenerator.GenerateSelectById());
