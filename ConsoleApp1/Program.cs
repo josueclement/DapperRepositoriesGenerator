@@ -25,11 +25,13 @@ class Program
             "System.Data.SQLite",
             "System.Data.SQLite.SQLiteFactory, System.Data.SQLite");
         
-        await TestInsert();
-        await TestSelectAll();
-        await TestSelectById();
-        await TestUpdate();
-        await TestDelete();
+        Generate();
+        
+        // await TestInsert();
+        // await TestSelectAll();
+        // await TestSelectById();
+        // await TestUpdate();
+        // await TestDelete();
     }
 
     static DbConnection CreateConnection()
@@ -53,6 +55,8 @@ class Program
         Console.WriteLine($"Delete: {usersTable.GenerateSqlRequestDelete()}");
         Console.WriteLine("Repository:");
         Console.WriteLine(new RepositoryGenerator(usersTable).GenerateRepository());
+        Console.WriteLine("Create table:");
+        Console.WriteLine(usersTable.GenerateSqlRequestCreateTable());
     }
 
     static async Task TestSelectAll()

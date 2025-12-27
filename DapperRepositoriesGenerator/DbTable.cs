@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text;
 
 namespace DapperRepositoriesGenerator;
 
@@ -48,8 +49,19 @@ public class DbTable
 
     public string GenerateSqlRequestCreateTable()
     {
+        var sb = new StringBuilder();
+        sb.AppendLine($"CREATE TABLE {_columnsQuote}{_tableName}{_columnsQuote}(");
+        foreach (var columnName in _columnNames)
+            sb.AppendLine($"    {_columnsQuote}{columnName}{_columnsQuote} TEXT,");
+        sb.AppendLine($"    PRIMARY KEY({_columnsQuote}{GetIdColumn()}{_columnsQuote})");
+        sb.AppendLine(");");
+        return sb.ToString();
+    }
+
+    // TODO: Generate class
+    public string GenerateClass()
+    {
         throw new NotImplementedException();
-        // return $"CREATE TABLE {_tableName} ( {string.Join(", ", _columnNames)} )";
     }
     
     public string GenerateSqlRequestSelectAll()
@@ -76,11 +88,4 @@ public class DbTable
     {
         return $"DELETE FROM {_columnsQuote}{_tableName}{_columnsQuote} {GetWhereId()}";
     }
-
-    public string GenerateRepository()
-    {
-        throw new NotImplementedException();
-    }
-    
-    
 }
