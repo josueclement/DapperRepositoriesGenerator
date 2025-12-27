@@ -4,6 +4,8 @@ using System.Data.Common;
 using System.Threading.Tasks;
 using Bogus;
 using DapperRepositoriesGenerator;
+using Scriban;
+using Scriban.Runtime;
 
 namespace ConsoleApp1;
 
@@ -17,6 +19,11 @@ namespace ConsoleApp1;
 // PRIMARY KEY(`Id`)
 //     );
 
+public class TestClass
+{
+    public string ClassName { get; set; }
+}
+
 class Program
 {
     static async Task Main(string[] args)
@@ -25,6 +32,7 @@ class Program
             "System.Data.SQLite",
             "System.Data.SQLite.SQLiteFactory, System.Data.SQLite");
         
+        // TestScriban();
         Generate();
         
         // await TestInsert();
@@ -32,6 +40,17 @@ class Program
         // await TestSelectById();
         // await TestUpdate();
         // await TestDelete();
+    }
+
+    static void TestScriban()
+    {
+        // var testClass = new TestClass() { ClassName = "Toto" };
+        var template = Template.Parse("public class {{ ClassName }} { }");
+        var context = new TemplateContext();
+        var scriptObject = new ScriptObject();
+        scriptObject.Add("ClassName", "Toto");
+        context.PushGlobal(scriptObject);
+        var result = template.Render(context);
     }
 
     static DbConnection CreateConnection()
@@ -48,15 +67,17 @@ class Program
     static void Generate()
     {
         var usersTable = new DbTable("User", ["Id", "CreationDate", "ModificationDate", "Username", "FullName", "Password"]);
-        Console.WriteLine($"SelectAll: {usersTable.GenerateSqlRequestSelectAll()}");
-        Console.WriteLine($"SelectById: {usersTable.GenerateSqlRequestSelectById()}");
-        Console.WriteLine($"Insert: {usersTable.GenerateSqlRequestInsert()}");
-        Console.WriteLine($"Update: {usersTable.GenerateSqlRequestUpdate()}");
-        Console.WriteLine($"Delete: {usersTable.GenerateSqlRequestDelete()}");
+        var sqlGenerator = new SqlGenerator(usersTable);
+        var repositoryGenerator = new RepositoryGenerator(usersTable, sqlGenerator);
+        Console.WriteLine($"SelectAll: {sqlGenerator.GenerateSelectAll()}");
+        Console.WriteLine($"SelectById: {sqlGenerator.GenerateSelectById()}");
+        Console.WriteLine($"Insert: {sqlGenerator.GenerateInsert()}");
+        Console.WriteLine($"Update: {sqlGenerator.GenerateUpdate()}");
+        Console.WriteLine($"Delete: {sqlGenerator.GenerateDelete()}");
         Console.WriteLine("Repository:");
-        Console.WriteLine(new RepositoryGenerator(usersTable).GenerateRepository());
+        Console.WriteLine(repositoryGenerator.GenerateRepository());
         Console.WriteLine("Create table:");
-        Console.WriteLine(usersTable.GenerateSqlRequestCreateTable());
+        Console.WriteLine(sqlGenerator.GenerateCreateTableScript());
     }
 
     static async Task TestSelectAll()

@@ -1,0 +1,50 @@
+using Dapper;
+using System.Collections.Generic;
+using System.Data;
+using System.Threading.Tasks;
+using System;
+
+namespace {{ RepositoryNamespace }};
+
+public class {{ TableName }}Repository(IDbConnection connection)
+{
+    public async Task<IEnumerable<{{ TableName }}>> GetAllAsync()
+    {
+        var sql = "{{ SelectAllRequest }}";
+        return await connection
+            .QueryAsync<{{ TableName }}>(sql)
+            .ConfigureAwait(false);
+    }
+
+    public async Task<{{ TableName }}?> GetByIdAsync(string id)
+    {
+        var sql = "{{ SelectByIdRequest }}";
+        return await connection
+            .QuerySingleOrDefaultAsync<{{ TableName }}>(sql, new { Id = id })
+            .ConfigureAwait(false);
+    }
+
+    public async Task<int> AddAsync({{ TableName }} obj)
+    {
+        var sql = "{{ InsertRequest }}";
+        return await connection
+            .ExecuteAsync(sql, obj)
+            .ConfigureAwait(false);
+    }
+
+    public async Task<int> UpdateAsync({{ TableName }} obj)
+    {
+        var sql = "{{ UpdateRequest }}";
+        return await connection
+            .ExecuteAsync(sql, obj)
+            .ConfigureAwait(false);
+    }
+
+    public async Task<int> DeleteAsync({{ TableName }} obj)
+    {
+        var sql = "{{ DeleteRequest }}";
+        return await connection
+            .ExecuteAsync(sql, obj)
+            .ConfigureAwait(false);
+    }
+}
