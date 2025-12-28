@@ -1,4 +1,5 @@
 using {{ EntitiesNamespace }};
+using {{ RepositoryInterfaceNamespace }};
 using Dapper;
 using System.Collections.Generic;
 using System.Data;
@@ -7,7 +8,7 @@ using System;
 
 namespace {{ Namespace }};
 
-public class {{ TableName }}Repository(IDbConnection connection)
+public class {{ TableName }}Repository(IDbConnection connection) : I{{ TableName }}Repository
 {
     public async Task<IEnumerable<{{ TableName }}>> GetAllAsync()
     {

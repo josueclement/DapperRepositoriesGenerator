@@ -11,7 +11,7 @@ public class RepositoryGenerator(
 {
     public string GenerateRepositoryGenericInterface()
     {
-        using var repositoryTemplateStream = AssemblyHelper.GetEmbeddedStream("DapperRepositoriesGenerator.Templates.RepositoryGenericTemplate.txt");
+        using var repositoryTemplateStream = AssemblyHelper.GetEmbeddedStream("DapperRepositoriesGenerator.Templates.IRepositoryGenericTemplate.txt");
         using var reader = new StreamReader(repositoryTemplateStream, Encoding.UTF8);
         var templateContent = reader.ReadToEnd();
 
@@ -25,7 +25,7 @@ public class RepositoryGenerator(
 
     public string GenerateRepositoryInterface(DbTable table)
     {
-        using var repositoryTemplateStream = AssemblyHelper.GetEmbeddedStream("DapperRepositoriesGenerator.Templates.RepositoryTemplate.txt");
+        using var repositoryTemplateStream = AssemblyHelper.GetEmbeddedStream("DapperRepositoriesGenerator.Templates.IRepositoryTemplate.txt");
         using var reader = new StreamReader(repositoryTemplateStream, Encoding.UTF8);
         var templateContent = reader.ReadToEnd();
 
@@ -48,6 +48,7 @@ public class RepositoryGenerator(
         var scriptObject = new ScriptObject
         {
             { "EntitiesNamespace", options.EntitiesNamespace },
+            { "RepositoryInterfaceNamespace", options.RepositoryInterfaceNamespace },
             { "Namespace", options.RepositoryNamespace },
             { "TableName", table.TableName },
             { "SelectAllRequest", sqlGenerator.GenerateSelectAll(table) },

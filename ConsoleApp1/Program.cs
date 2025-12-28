@@ -78,13 +78,31 @@ class Program
             RepositoryNamespace = "ConsoleApp1",
             EntitiesNamespace =  "ConsoleApp1"
         });
+        var serviceGenerator = new ServiceGenerator(new ServiceGeneratorOptions
+        {
+            ServiceInterfaceNamespace = "ConsoleApp1",
+            ServiceNamespace = "ConsoleApp1",
+            RepositoryInterfaceNamespace = "ConsoleApp1",
+            EntitiesNamespace = "ConsoleApp1"
+        });
+        
         Console.WriteLine($"SelectAll: {sqlGenerator.GenerateSelectAll(usersTable)}");
         Console.WriteLine($"SelectById: {sqlGenerator.GenerateSelectById(usersTable)}");
         Console.WriteLine($"Insert: {sqlGenerator.GenerateInsert(usersTable)}");
         Console.WriteLine($"Update: {sqlGenerator.GenerateUpdate(usersTable)}");
         Console.WriteLine($"Delete: {sqlGenerator.GenerateDelete(usersTable)}");
-        Console.WriteLine("Repository:");
+        Console.WriteLine("---Repository:");
+        Console.WriteLine(repositoryGenerator.GenerateRepositoryGenericInterface());
+        Console.WriteLine("---Repository:");
+        Console.WriteLine(repositoryGenerator.GenerateRepositoryInterface(usersTable));
+        Console.WriteLine("---Repository:");
         Console.WriteLine(repositoryGenerator.GenerateRepository(usersTable));
+        Console.WriteLine("---Service:");
+        Console.WriteLine(serviceGenerator.GenerateServiceGenericInterface());
+        Console.WriteLine("---Service:");
+        Console.WriteLine(serviceGenerator.GenerateServiceInterface(usersTable));
+        Console.WriteLine("---Service:");
+        Console.WriteLine(serviceGenerator.GenerateService(usersTable));
         Console.WriteLine("Create table:");
         Console.WriteLine(sqlGenerator.GenerateCreateTableScript(usersTable));
     }

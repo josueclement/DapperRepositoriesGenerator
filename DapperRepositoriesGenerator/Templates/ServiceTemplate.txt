@@ -1,0 +1,52 @@
+using {{ EntitiesNamespace }};
+using {{ ServiceInterfaceNamespace }};
+using {{ RepositoryInterfaceNamespace }};
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using ZiggyCreatures.Caching.Fusion;
+
+namespace {{ Namespace }};
+
+public class {{ TableName }}Service(I{{ TableName }}Repository repository) : I{{ TableName }}Service
+{
+    private readonly FusionCache _cache = new(new FusionCacheOptions());
+    
+    public async Task<{{ TableName }}?> GetByIdAsync(string id)
+    {
+        var cacheKey = $"_id:{id}_";
+
+        return await _cache.GetOrSetAsync<{{ TableName }}?>(cacheKey, 
+            async _ => await repository.GetByIdAsync(id).ConfigureAwait(false))
+            .ConfigureAwait(false);
+    }
+
+    public async Task<IEnumerable<{{ TableName }}>> GetAllAsync()
+    {
+        var cacheKey = "_all_";
+
+        return await _cache.GetOrSetAsync<IEnumerable<{{ TableName }}>>(cacheKey, 
+            async _ => await repository.GetAllAsync().ConfigureAwait(false))
+            .ConfigureAwait(false);
+    }
+
+    public async Task<bool> AddAsync({{ TableName }} obj)
+    {
+        var result = await repository.AddAsync(obj).ConfigureAwait(false);
+        await _cache.ClearAsync().ConfigureAwait(false);
+        return result > 0;
+    }
+
+    public async Task<bool> UpdateAsync({{ TableName }} obj)
+    {
+        var result = await repository.UpdateAsync(obj).ConfigureAwait(false);
+        await _cache.ClearAsync().ConfigureAwait(false);
+        return result > 0;
+    }
+
+    public async Task<bool> DeleteAsync({{ TableName }} obj)
+    {
+        var result = await repository.DeleteAsync(obj).ConfigureAwait(false);
+        await _cache.ClearAsync().ConfigureAwait(false);
+        return result > 0;
+    }
+}
