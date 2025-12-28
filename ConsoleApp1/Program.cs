@@ -68,14 +68,19 @@ class Program
     {
         var usersTable = new DbTable("User", ["Id", "CreationDate", "ModificationDate", "Username", "FullName", "Password"]);
         var sqlGenerator = new SqlGenerator(usersTable);
-        var repositoryGenerator = new RepositoryGenerator(usersTable, sqlGenerator);
+        var repositoryGenerator = new RepositoryGenerator(sqlGenerator, new RepositoryGeneratorOptions
+        {
+            RepositoryInterfaceNamespace =  "ConsoleApp1",
+            RepositoryNamespace = "ConsoleApp1",
+            EntitiesNamespace =  "ConsoleApp1"
+        });
         Console.WriteLine($"SelectAll: {sqlGenerator.GenerateSelectAll()}");
         Console.WriteLine($"SelectById: {sqlGenerator.GenerateSelectById()}");
         Console.WriteLine($"Insert: {sqlGenerator.GenerateInsert()}");
         Console.WriteLine($"Update: {sqlGenerator.GenerateUpdate()}");
         Console.WriteLine($"Delete: {sqlGenerator.GenerateDelete()}");
         Console.WriteLine("Repository:");
-        Console.WriteLine(repositoryGenerator.GenerateRepository());
+        Console.WriteLine(repositoryGenerator.GenerateRepository(usersTable));
         Console.WriteLine("Create table:");
         Console.WriteLine(sqlGenerator.GenerateCreateTableScript());
     }

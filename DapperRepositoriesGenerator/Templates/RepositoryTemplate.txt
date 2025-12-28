@@ -4,7 +4,7 @@ using System.Data;
 using System.Threading.Tasks;
 using System;
 
-namespace {{ RepositoryNamespace }};
+namespace {{ Namespace }};
 
 public class {{ TableName }}Repository(IDbConnection connection)
 {

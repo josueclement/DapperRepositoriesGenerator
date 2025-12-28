@@ -1,0 +1,5 @@
+using {{ EntitiesNamespace }};
+
+namespace {{ Namespace }};
+
+public interface I{{ TableName }}Repository : IRepository<{{ TableName }}>;

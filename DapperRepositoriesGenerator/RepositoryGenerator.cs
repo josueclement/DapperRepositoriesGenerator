@@ -5,23 +5,57 @@ using Scriban.Runtime;
 
 namespace DapperRepositoriesGenerator;
 
-public class RepositoryGenerator(DbTable table, SqlGenerator sqlGenerator)
+public class RepositoryGenerator(
+    SqlGenerator sqlGenerator,
+    RepositoryGeneratorOptions options)
 {
-    public string GenerateRepository(string repositoryNamespace = "MyNamespace")
+    public string GenerateRepositoryGenericInterface()
+    {
+        using var repositoryTemplateStream = AssemblyHelper.GetEmbeddedStream("DapperRepositoriesGenerator.Templates.RepositoryGenericTemplate.txt");
+        using var reader = new StreamReader(repositoryTemplateStream, Encoding.UTF8);
+        var templateContent = reader.ReadToEnd();
+
+        var scriptObject = new ScriptObject
+        {
+            { "Namespace", options.RepositoryInterfaceNamespace }
+        };
+        
+        return ScribanHelper.RenderTemplate(templateContent, scriptObject);
+    }
+
+    public string GenerateRepositoryInterface(DbTable table)
     {
         using var repositoryTemplateStream = AssemblyHelper.GetEmbeddedStream("DapperRepositoriesGenerator.Templates.RepositoryTemplate.txt");
         using var reader = new StreamReader(repositoryTemplateStream, Encoding.UTF8);
         var templateContent = reader.ReadToEnd();
 
-        var scriptObject = new ScriptObject();
-        scriptObject.Add("RepositoryNamespace", repositoryNamespace);
-        scriptObject.Add("TableName", table.TableName);
-        scriptObject.Add("SelectAllRequest", sqlGenerator.GenerateSelectAll());
-        scriptObject.Add("SelectByIdRequest", sqlGenerator.GenerateSelectById());
-        scriptObject.Add("InsertRequest", sqlGenerator.GenerateInsert());
-        scriptObject.Add("UpdateRequest", sqlGenerator.GenerateUpdate());
-        scriptObject.Add("DeleteRequest", sqlGenerator.GenerateDelete());
+        var scriptObject = new ScriptObject
+        {
+            { "Namespace", options.RepositoryInterfaceNamespace },
+            { "EntitiesNamespace", options.EntitiesNamespace },
+            { "TableName", table.TableName }
+        };
         
+        return ScribanHelper.RenderTemplate(templateContent, scriptObject);
+    }
+    
+    public string GenerateRepository(DbTable table)
+    {
+        using var repositoryTemplateStream = AssemblyHelper.GetEmbeddedStream("DapperRepositoriesGenerator.Templates.RepositoryTemplate.txt");
+        using var reader = new StreamReader(repositoryTemplateStream, Encoding.UTF8);
+        var templateContent = reader.ReadToEnd();
+
+        var scriptObject = new ScriptObject
+        {
+            { "Namespace", options.RepositoryNamespace },
+            { "TableName", table.TableName },
+            { "SelectAllRequest", sqlGenerator.GenerateSelectAll() },
+            { "SelectByIdRequest", sqlGenerator.GenerateSelectById() },
+            { "InsertRequest", sqlGenerator.GenerateInsert() },
+            { "UpdateRequest", sqlGenerator.GenerateUpdate() },
+            { "DeleteRequest", sqlGenerator.GenerateDelete() }
+        };
+
         return ScribanHelper.RenderTemplate(templateContent, scriptObject);
     }
 }

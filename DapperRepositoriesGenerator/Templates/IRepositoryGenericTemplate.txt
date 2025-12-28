@@ -1,0 +1,14 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace {{ Namespace }};
+
+public interface IRepository<T>
+    where T : class
+{
+    Task<T?> GetByIdAsync(string id);
+    Task<IEnumerable<T>> GetAllAsync();
+    Task<int> AddAsync(T obj);
+    Task<int> UpdateAsync(T obj);
+    Task<int> DeleteAsync(T obj);
+}

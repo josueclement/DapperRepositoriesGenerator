@@ -13,8 +13,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="Templates\RepositoryTemplate.txt" />
-      <EmbeddedResource Include="Templates\RepositoryTemplate.txt" />
+      <None Remove="Templates\*.txt" />
+      <EmbeddedResource Include="Templates\*.txt" />
     </ItemGroup>
 
 </Project>
