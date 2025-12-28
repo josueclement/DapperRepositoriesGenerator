@@ -47,13 +47,14 @@ public class RepositoryGenerator(
 
         var scriptObject = new ScriptObject
         {
+            { "EntitiesNamespace", options.EntitiesNamespace },
             { "Namespace", options.RepositoryNamespace },
             { "TableName", table.TableName },
-            { "SelectAllRequest", sqlGenerator.GenerateSelectAll() },
-            { "SelectByIdRequest", sqlGenerator.GenerateSelectById() },
-            { "InsertRequest", sqlGenerator.GenerateInsert() },
-            { "UpdateRequest", sqlGenerator.GenerateUpdate() },
-            { "DeleteRequest", sqlGenerator.GenerateDelete() }
+            { "SelectAllRequest", sqlGenerator.GenerateSelectAll(table) },
+            { "SelectByIdRequest", sqlGenerator.GenerateSelectById(table) },
+            { "InsertRequest", sqlGenerator.GenerateInsert(table) },
+            { "UpdateRequest", sqlGenerator.GenerateUpdate(table) },
+            { "DeleteRequest", sqlGenerator.GenerateDelete(table) }
         };
 
         return ScribanHelper.RenderTemplate(templateContent, scriptObject);

@@ -4,56 +4,50 @@ using System.Text;
 
 namespace DapperRepositoriesGenerator;
 
-public class SqlGenerator(
-    DbTable table,
-    string parameterPrefix = "@",
-    string quote = "`")
+public class SqlGenerator(SqlGeneratorOptions options)
 {
-    public string TableName => table.TableName;
-    public string[] ColumnNames => table.ColumnNames;
-    
-    public string GenerateCreateTableScript()
+    public string GenerateCreateTableScript(DbTable table)
     {
         var sb = new StringBuilder();
         
-        sb.AppendLine($"CREATE TABLE {quote}{TableName}{quote}(");
+        sb.AppendLine($"CREATE TABLE {options.Quote}{table.TableName}{options.Quote}(");
         
-        foreach (var columnName in ColumnNames)
-            sb.AppendLine($"    {quote}{columnName}{quote} TEXT,");
+        foreach (var columnName in table.ColumnNames)
+            sb.AppendLine($"    {options.Quote}{columnName}{options.Quote} TEXT,");
         
-        sb.AppendLine($"    PRIMARY KEY({quote}{GetIdColumn()}{quote})");
+        sb.AppendLine($"    PRIMARY KEY({options.Quote}{GetIdColumn(table)}{options.Quote})");
         sb.AppendLine(");");
         
         return sb.ToString();
     }
 
-    public string GenerateSelectAll()
-        => $"SELECT {GetQuotedColumns()} FROM {quote}{TableName}{quote}";
+    public string GenerateSelectAll(DbTable table)
+        => $"SELECT {GetQuotedColumns(table)} FROM {options.Quote}{table.TableName}{options.Quote}";
 
-    public string GenerateSelectById()
-        => $"SELECT {GetQuotedColumns()} FROM {quote}{TableName}{quote} {GetWhereId()}";
+    public string GenerateSelectById(DbTable table)
+        => $"SELECT {GetQuotedColumns(table)} FROM {options.Quote}{table.TableName}{options.Quote} {GetWhereId(table)}";
     
-    public string GenerateInsert()
-        => $"INSERT INTO {quote}{TableName}{quote} ({GetQuotedColumns()}) VALUES ({GetParameters()})";
+    public string GenerateInsert(DbTable table)
+        => $"INSERT INTO {options.Quote}{table.TableName}{options.Quote} ({GetQuotedColumns(table)}) VALUES ({GetParameters(table)})";
     
-    public string GenerateUpdate()
-        => $"UPDATE {quote}{TableName}{quote} SET {GetColumnsSets()} {GetWhereId()}";
+    public string GenerateUpdate(DbTable table)
+        => $"UPDATE {options.Quote}{table.TableName}{options.Quote} SET {GetColumnsSets(table)} {GetWhereId(table)}";
 
-    public string GenerateDelete()
-        => $"DELETE FROM {quote}{TableName}{quote} {GetWhereId()}";
+    public string GenerateDelete(DbTable table)
+        => $"DELETE FROM {options.Quote}{table.TableName}{options.Quote} {GetWhereId(table)}";
 
-    private string GetQuotedColumns()
-        => string.Join(", ", ColumnNames.Select(c => $"{quote}{c}{quote}"));
+    private string GetQuotedColumns(DbTable table)
+        => string.Join(", ", table.ColumnNames.Select(c => $"{options.Quote}{c}{options.Quote}"));
     
-    private string GetIdColumn()
-        => ColumnNames.First();
+    private string GetIdColumn(DbTable table)
+        => table.ColumnNames.First();
     
-    private string GetParameters()
-        => string.Join(", ", ColumnNames.Select(c => $"{parameterPrefix}{c}"));
+    private string GetParameters(DbTable table)
+        => string.Join(", ", table.ColumnNames.Select(c => $"{options.ParameterPrefix}{c}"));
     
-    private string GetColumnsSets()
-        => string.Join(", ", ColumnNames.Skip(1).Select(c => $"{quote}{c}{quote} = {parameterPrefix}{c}"));
+    private string GetColumnsSets(DbTable table)
+        => string.Join(", ", table.ColumnNames.Skip(1).Select(c => $"{options.Quote}{c}{options.Quote} = {options.ParameterPrefix}{c}"));
     
-    private string GetWhereId()
-        => $"WHERE {quote}{GetIdColumn()}{quote} = {parameterPrefix}{GetIdColumn()}";
+    private string GetWhereId(DbTable table)
+        => $"WHERE {options.Quote}{GetIdColumn(table)}{options.Quote} = {options.ParameterPrefix}{GetIdColumn(table)}";
 }
