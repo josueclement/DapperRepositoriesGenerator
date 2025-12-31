@@ -92,7 +92,10 @@ class Program
             RepositoryInterfaceNamespace = "EventManager.Application.Interfaces.Repositories",
             EntitiesNamespace = "EventManager.Domain.Entities"
         });
-        var entityGenerator = new EntityGenerator("EventManager.Domain.Entities");
+        var entityGenerator = new EntityGenerator(new EntityGeneratorOptions
+        {
+            EntitiesNamespace = "EventManager.Domain.Entities"
+        });
 
         var basePath = "/home/jo/Dev/EventManager/";
         var repositoriesInterfacesPath = Path.Combine(basePath, "EventManager.Application", "Interfaces", "Repositories");

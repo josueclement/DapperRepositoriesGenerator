@@ -2,7 +2,7 @@ using System.Text;
 
 namespace DapperRepositoriesGenerator;
 
-public class EntityGenerator(string entitiesNamespace)
+public class EntityGenerator(EntityGeneratorOptions options)
 {
     public string GenerateEntity(DbTable table)
     {
@@ -10,7 +10,7 @@ public class EntityGenerator(string entitiesNamespace)
         
         sb.AppendLine("using System;");
         sb.AppendLine();
-        sb.AppendLine($"namespace {entitiesNamespace};");
+        sb.AppendLine($"namespace {options.EntitiesNamespace};");
         sb.AppendLine();
         sb.AppendLine($"public class {table.TableName}");
         sb.AppendLine("{");
