@@ -77,59 +77,49 @@ class Program
             new DbTable("Staff", ["Id", "CreationDate", "ModificationDate", "Name", "Contact", "Description"]),
             new DbTable("Volunteer", ["Id", "CreationDate", "ModificationDate", "Name", "Contact", "Description"])
         };
-
-        var sqlGenerator = new SqlGenerator(new SqlGeneratorOptions());
-        var repositoryGenerator = new RepositoryGenerator(sqlGenerator, new RepositoryGeneratorOptions
-        {
-            RepositoryInterfaceNamespace =  "EventManager.Application.Interfaces.Repositories",
-            RepositoryNamespace = "EventManager.Infrastructure.Database.Repositories",
-            EntitiesNamespace =  "EventManager.Domain.Entities"
-        });
-        var serviceGenerator = new ServiceGenerator(new ServiceGeneratorOptions
-        {
-            ServiceInterfaceNamespace = "EventManager.Application.Interfaces.Services",
-            ServiceNamespace = "EventManager.Infrastructure.Database.Services",
-            RepositoryInterfaceNamespace = "EventManager.Application.Interfaces.Repositories",
-            EntitiesNamespace = "EventManager.Domain.Entities"
-        });
-        var entityGenerator = new EntityGenerator(new EntityGeneratorOptions
-        {
-            EntitiesNamespace = "EventManager.Domain.Entities"
-        });
+        
+        var repositoriesInterfaceNamespace = "EventManager.Application.Interfaces.Repositories";
+        var repositoriesNamespace = "EventManager.Infrastructure.Database.Repositories";
+        var servicesInterfaceNamespace = "EventManager.Application.Interfaces.Services";
+        var servicesNamespace = "EventManager.Infrastructure.Database.Services";
+        var entitiesNamespace = "EventManager.Domain.Entities";
 
         var basePath = "/home/jo/Dev/EventManager/";
-        var repositoriesInterfacesPath = Path.Combine(basePath, "EventManager.Application", "Interfaces", "Repositories");
-        var servicesInterfacesPath = Path.Combine(basePath, "EventManager.Application", "Interfaces", "Services");
-        var repositoriesPath = Path.Combine(basePath, "EventManager.Infrastructure", "Database", "Repositories");
-        var servicesPath = Path.Combine(basePath, "EventManager.Infrastructure", "Database", "Services");
-        var entitiesPath = Path.Combine(basePath, "EventManager.Domain", "Entities");
-        var scriptsPath = Path.Combine(basePath, "EventManager.Infrastructure", "Database");
-        
-        var repositoryGenericInterface = repositoryGenerator.GenerateRepositoryGenericInterface();
-        await File.WriteAllTextAsync(Path.Combine(repositoriesInterfacesPath, "IRepository.cs"), repositoryGenericInterface);
-        var serviceGenericInterface = serviceGenerator.GenerateServiceGenericInterface();
-        await File.WriteAllTextAsync(Path.Combine(servicesInterfacesPath, "IService.cs"), serviceGenericInterface);
-        
-        foreach (var table in tables)
-        {
-            var tableName = table.TableName;
-            
-            var script = sqlGenerator.GenerateCreateTableScript(table);
-            await File.WriteAllTextAsync(Path.Combine(scriptsPath, tableName + ".sql"), script);
-            
-            var repositoryInterface = repositoryGenerator.GenerateRepositoryInterface(table);
-            await File.WriteAllTextAsync(Path.Combine(repositoriesInterfacesPath, $"I{tableName}Repository.cs"), repositoryInterface);
-            var repository = repositoryGenerator.GenerateRepository(table);
-            await File.WriteAllTextAsync(Path.Combine(repositoriesPath, $"{tableName}Repository.cs"), repository);
-            
-            var serviceInterface = serviceGenerator.GenerateServiceInterface(table);
-            await File.WriteAllTextAsync(Path.Combine(servicesInterfacesPath, $"I{tableName}Service.cs"), serviceInterface);
-            var service = serviceGenerator.GenerateService(table);
-            await File.WriteAllTextAsync(Path.Combine(servicesPath, $"{tableName}Service.cs"), service);
-            
-            var entity = entityGenerator.GenerateEntity(table);
-            await File.WriteAllTextAsync(Path.Combine(entitiesPath, $"{tableName}.cs"), entity);
-        }
+
+        var filesGenerator = new FilesGenerator()
+            .SetSqlGeneratorOptions(options =>
+            {
+                options.ParameterPrefix = "@";
+                options.Quote = "`";
+            })
+            .SetRepositoryGeneratorOptions(options =>
+            {
+                //TODO: rename options with ies
+                options.RepositoryInterfaceNamespace = repositoriesInterfaceNamespace;
+                options.RepositoryNamespace = repositoriesNamespace;
+                options.EntitiesNamespace = entitiesNamespace;
+            })
+            .SetServiceGeneratorOptions(options =>
+            {
+                options.ServiceInterfaceNamespace = servicesInterfaceNamespace;
+                options.ServiceNamespace = servicesNamespace;
+                options.RepositoryInterfaceNamespace = repositoriesInterfaceNamespace;
+                options.EntitiesNamespace = entitiesNamespace;
+            })
+            .SetEntityGeneratorOptions(options =>
+            {
+                options.EntitiesNamespace = entitiesNamespace;
+            })
+            .GenerateRepositories(
+                interfacesPath: Path.Combine(basePath, "EventManager.Application", "Interfaces", "Repositories"),
+                implementationsPath: Path.Combine(basePath, "EventManager.Infrastructure", "Database", "Repositories"))
+            .GenerateServices(
+                interfacesPath: Path.Combine(basePath, "EventManager.Application", "Interfaces", "Services"),
+                implementationsPath: Path.Combine(basePath, "EventManager.Infrastructure", "Database", "Services"))
+            .GenerateEntities(Path.Combine(basePath, "EventManager.Domain", "Entities"))
+            .GenerateSqlCreationScript(Path.Combine(basePath, "EventManager.Infrastructure", "Database"));
+
+        await filesGenerator.GenerateFilesAsync(tables);
     }
 
     static void Generate()

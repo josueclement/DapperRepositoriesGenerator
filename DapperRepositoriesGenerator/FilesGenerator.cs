@@ -6,19 +6,6 @@ using System.Threading.Tasks;
 
 namespace DapperRepositoriesGenerator;
 
-public class Dummy
-{
-    public void Foo()
-    {
-        var generator = new FilesGenerator()
-            .SetSqlGeneratorOptions(options =>
-            {
-                options.ParameterPrefix = "@";
-                options.Quote = "`";
-            });
-    }
-}
-
 public class FilesGenerator
 {
     private SqlGeneratorOptions _sqlGeneratorOptions;
