@@ -16,7 +16,7 @@ public class EntityGenerator(EntityGeneratorOptions options)
         sb.AppendLine("{");
 
         foreach (var columnName in table.ColumnNames)
-            sb.AppendLine($"public string? {columnName} {{ get; set; }}");
+            sb.AppendLine($"    public string? {columnName} {{ get; set; }}");
         
         sb.AppendLine("}");
         
