@@ -2,8 +2,8 @@ namespace DapperRepositoriesGenerator;
 
 public class ServiceGeneratorOptions
 {
-    public string ServiceInterfaceNamespace { get; set; } = "MyServiceInterface";
-    public string RepositoryInterfaceNamespace { get; set; } = "MyRepositoryInterface";
-    public string ServiceNamespace { get; set; } = "MyServiceNamespace";
-    public string EntitiesNamespace { get; set; } = "MyEntitiesNamespace";
+    public string ServiceInterfaceNamespace { get; set; } = "MyApp.Application.Interfaces.Database.Services";
+    public string RepositoryInterfaceNamespace { get; set; } = "MyApp.Application.Interfaces.Database.Repositories";
+    public string ServiceNamespace { get; set; } = "MyApp.Application.Databas.Database.Services";
+    public string EntitiesNamespace { get; set; } = "MyApp.Domain.Entities";
 }
