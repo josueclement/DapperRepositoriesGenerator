@@ -1,0 +1,10 @@
+using System;
+
+namespace {{ Namespace }};
+
+public class {{ EntityName }}
+{
+{{ for property in Properties }}
+    public string? {{ property.Name }} { get; set; }
+{{ end }}
+}

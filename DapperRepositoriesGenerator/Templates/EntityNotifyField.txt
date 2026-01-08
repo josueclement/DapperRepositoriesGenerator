@@ -1,0 +1,15 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+using System;
+
+namespace {{ Namespace }};
+
+public class {{ EntityName }} : ObservableObject
+{
+{{ for property in Properties }}
+    public string? {{ property.Name }}
+    {
+        get;
+        set => SetProperty(ref field, value);
+    }
+{{ end }}
+}

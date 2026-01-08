@@ -1,4 +1,8 @@
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
+using Scriban.Runtime;
 
 namespace DapperRepositoriesGenerator;
 
@@ -6,20 +10,25 @@ public class EntityGenerator(EntityGeneratorOptions options)
 {
     public string GenerateEntity(DbTable table)
     {
-        var sb = new StringBuilder();
+        var templateResourceName = options.GenerateNotifyProperties
+            ? "DapperRepositoriesGenerator.Templates.EntityNotifyField.txt"
+            : "DapperRepositoriesGenerator.Templates.EntitySimple.txt";
         
-        sb.AppendLine("using System;");
-        sb.AppendLine();
-        sb.AppendLine($"namespace {options.EntitiesNamespace};");
-        sb.AppendLine();
-        sb.AppendLine($"public class {table.TableName}");
-        sb.AppendLine("{");
+        using var entityTemplateStream = AssemblyHelper.GetEmbeddedStream(templateResourceName);
+        using var reader = new StreamReader(entityTemplateStream, Encoding.UTF8);
+        var templateContent = reader.ReadToEnd();
 
-        foreach (var columnName in table.ColumnNames)
-            sb.AppendLine($"    public string? {columnName} {{ get; set; }}");
-        
-        sb.AppendLine("}");
-        
-        return sb.ToString();
+        var scriptObject = new ScriptObject
+        {
+            { "Namespace", options.EntitiesNamespace },
+            { "EntityName", table.TableName },
+            { "Properties", table.ColumnNames.Select(x => new Dictionary<string, object> 
+                { 
+                    { "Name", x } 
+                }).ToList()
+            }
+        };
+
+        return ScribanHelper.RenderTemplate(templateContent, scriptObject);
     }
 }
