@@ -22,11 +22,17 @@ public class EntityGenerator(EntityGeneratorOptions options)
         {
             { "Namespace", options.EntitiesNamespace },
             { "EntityName", table.TableName },
-            { "Properties", table.ColumnNames.Select(x => new Dictionary<string, object> 
+            { "Properties", table.Columns.Select(x => new Dictionary<string, object> 
                 { 
-                    { "Name", x } 
+                    { "Name", x.columnName },
+                    { "TypeName", x.typeName } 
                 }).ToList()
             }
+            // { "Properties", table.ColumnNames.Select(x => new Dictionary<string, object> 
+            //     { 
+            //         { "Name", x } 
+            //     }).ToList()
+            // }
         };
 
         return ScribanHelper.RenderTemplate(templateContent, scriptObject);

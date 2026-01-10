@@ -6,7 +6,7 @@ namespace {{ Namespace }};
 public class {{ EntityName }} : ObservableObject
 {
 {{ for property in Properties }}
-    public string? {{ property.Name }}
+    public {{ property.TypeName }}? {{ property.Name }}
     {
         get;
         set => SetProperty(ref field, value);

@@ -24,7 +24,7 @@ class Program
     {
         var tables = new[]
         {
-            new DbTable("Artist", ["Id", "CreationDate", "ModificationDate", "ParentId", "Name", "Role", "Hotel", "StayStartDate", "StayEndDate", "Contact", "TravelDetails", "Transport", "Parking", "Misc", "Contract", "Rider", "Menus", "Roadmap", "Suisa", "Remarks"])
+            new DbTable("Artist", [("Id", "string"), ("CreationDate", "DateTime"), ("Height", "double")])
         };
 
         var entityGenerator = new EntityGenerator(new EntityGeneratorOptions
