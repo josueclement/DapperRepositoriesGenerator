@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Scriban.Runtime;
 
@@ -55,9 +56,24 @@ public class RepositoryGenerator(
             { "SelectByIdRequest", sqlGenerator.GenerateSelectById(table) },
             { "InsertRequest", sqlGenerator.GenerateInsert(table) },
             { "UpdateRequest", sqlGenerator.GenerateUpdate(table) },
-            { "DeleteRequest", sqlGenerator.GenerateDelete(table) }
+            { "DeleteRequest", sqlGenerator.GenerateDelete(table) },
+            { "IdColumnName", GetIdColumn(table) },
+            { "IdParameterName", GetIdParameter(table) },
+            { "IdTypeName", GetIdTypeName(table) }
         };
 
         return ScribanHelper.RenderTemplate(templateContent, scriptObject);
     }
+    
+    private string GetIdColumn(DbTable table)
+        => table.ColumnNames.First();
+
+    private string GetIdParameter(DbTable table)
+    {
+        var id = GetIdColumn(table);
+        return id.Substring(0, 1).ToLower() + id.Substring(1);
+    }
+
+    private string GetIdTypeName(DbTable table)
+        => table.Columns.First().typeName;
 }

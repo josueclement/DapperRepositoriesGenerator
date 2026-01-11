@@ -28,11 +28,6 @@ public class EntityGenerator(EntityGeneratorOptions options)
                     { "TypeName", x.typeName } 
                 }).ToList()
             }
-            // { "Properties", table.ColumnNames.Select(x => new Dictionary<string, object> 
-            //     { 
-            //         { "Name", x } 
-            //     }).ToList()
-            // }
         };
 
         return ScribanHelper.RenderTemplate(templateContent, scriptObject);

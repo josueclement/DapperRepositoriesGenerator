@@ -16,23 +16,63 @@ class Program
 {
     static async Task Main(string[] args)
     {
+        var id = "Id";
+        var test = id[..1].ToLower() + id[1..];
         // await GenerateEventManager();
-        await GenerateEntities();
+        // await GenerateEntities();
+        await GenerateUsers();
     }
 
     static async Task GenerateEntities()
     {
         var tables = new[]
         {
-            new DbTable("Artist", [("Id", "string"), ("CreationDate", "DateTime"), ("Height", "double")])
+            new DbTable("User", ["Id", "CreationDate", "ModificationDate", "Username", "FullName", "Group", "Password"]),
+            new DbTable("Group", ["Id", "CreationDate", "ModificationDate", "Name", "Description"]),
         };
 
-        var entityGenerator = new EntityGenerator(new EntityGeneratorOptions
+        var SqlGenerator = new SqlGenerator(new SqlGeneratorOptions());
+        foreach (var table in tables)
+            Console.WriteLine(SqlGenerator.GenerateCreateTableScript(table));
+
+        // var entityGenerator = new EntityGenerator(new EntityGeneratorOptions
+        // {
+        //     GenerateNotifyProperties = true
+        // });
+        // var res = entityGenerator.GenerateEntity(tables.First());
+        // Console.WriteLine(res);
+    }
+
+    static async Task GenerateUsers()
+    {
+        var tables = new[]
         {
-            GenerateNotifyProperties = true
-        });
-        var res = entityGenerator.GenerateEntity(tables.First());
-        Console.WriteLine(res);
+            new DbTable("User", ["Id", "CreationDate", "ModificationDate", "Username", "FullName", "Group", "Password"]),
+            new DbTable("Group", ["Id", "CreationDate", "ModificationDate", "Name", "Description"]),
+        };
+        
+        // var repositoriesInterfaceNamespace = "EventManager.Application.Interfaces.Repositories";
+        // var repositoriesNamespace = "EventManager.Infrastructure.Database.Repositories";
+        // var servicesInterfaceNamespace = "EventManager.Application.Interfaces.Services";
+        // var servicesNamespace = "EventManager.Infrastructure.Database.Services";
+        // var entitiesNamespace = "EventManager.Domain.Entities";
+
+        var basePath = "/home/jo/Dev/DapperRepositoriesGenerator/ConsoleApp1/Generated/";
+
+        var filesGenerator = new FilesGenerator()
+            .SetSqlGeneratorOptions(options => { })
+            .SetRepositoryGeneratorOptions(options => { })
+            .SetServiceGeneratorOptions(options => { })
+            .SetEntityGeneratorOptions(options => { })
+            .GenerateRepositories(
+                interfacesPath: basePath,
+                implementationsPath: basePath)
+            .GenerateServices(
+                interfacesPath: basePath,
+                implementationsPath: basePath)
+            .GenerateEntities(basePath);
+
+        await filesGenerator.GenerateFilesAsync(tables);
     }
 
     static async Task GenerateEventManager()
