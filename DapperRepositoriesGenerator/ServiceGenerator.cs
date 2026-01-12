@@ -15,7 +15,7 @@ public class ServiceGenerator(ServiceGeneratorOptions options)
 
         var scriptObject = new ScriptObject
         {
-            { "Namespace", options.ServiceInterfaceNamespace },
+            { "Namespace", options.ServicesInterfaceNamespace },
             { "EntitiesNamespace", options.EntitiesNamespace },
             { "TableName", table.TableName },
             { "IdParameterName", table.GetIdParameterName() },
@@ -35,9 +35,9 @@ public class ServiceGenerator(ServiceGeneratorOptions options)
         var scriptObject = new ScriptObject
         {
             { "EntitiesNamespace", options.EntitiesNamespace },
-            { "ServiceInterfaceNamespace", options.ServiceInterfaceNamespace },
-            { "RepositoryInterfaceNamespace", options.RepositoryInterfaceNamespace },
-            { "Namespace", options.ServiceNamespace },
+            { "ServiceInterfaceNamespace", options.ServicesInterfaceNamespace },
+            { "RepositoryInterfaceNamespace", options.RepositoriesInterfaceNamespace },
+            { "Namespace", options.ServicesNamespace },
             { "TableName", table.TableName },
             { "IdParameterName", table.GetIdParameterName() },
             { "IdTypeName", table.GetIdTypeName() },

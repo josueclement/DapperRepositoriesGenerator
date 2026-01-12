@@ -103,16 +103,15 @@ class Program
             })
             .SetRepositoryGeneratorOptions(options =>
             {
-                //TODO: rename options with ies
-                options.RepositoryInterfaceNamespace = repositoriesInterfaceNamespace;
-                options.RepositoryNamespace = repositoriesNamespace;
+                options.RepositoriesInterfaceNamespace = repositoriesInterfaceNamespace;
+                options.RepositoriesNamespace = repositoriesNamespace;
                 options.EntitiesNamespace = entitiesNamespace;
             })
             .SetServiceGeneratorOptions(options =>
             {
-                options.ServiceInterfaceNamespace = servicesInterfaceNamespace;
-                options.ServiceNamespace = servicesNamespace;
-                options.RepositoryInterfaceNamespace = repositoriesInterfaceNamespace;
+                options.ServicesInterfaceNamespace = servicesInterfaceNamespace;
+                options.ServicesNamespace = servicesNamespace;
+                options.RepositoriesInterfaceNamespace = repositoriesInterfaceNamespace;
                 options.EntitiesNamespace = entitiesNamespace;
             })
             .SetEntityGeneratorOptions(options =>

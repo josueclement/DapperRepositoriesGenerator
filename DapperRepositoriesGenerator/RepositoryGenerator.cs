@@ -18,7 +18,7 @@ public class RepositoryGenerator(
 
         var scriptObject = new ScriptObject
         {
-            { "Namespace", options.RepositoryInterfaceNamespace },
+            { "Namespace", options.RepositoriesInterfaceNamespace },
             { "EntitiesNamespace", options.EntitiesNamespace },
             { "TableName", table.TableName },
             { "IdColumnName", table.GetIdColumnName() },
@@ -39,8 +39,8 @@ public class RepositoryGenerator(
         var scriptObject = new ScriptObject
         {
             { "EntitiesNamespace", options.EntitiesNamespace },
-            { "RepositoryInterfaceNamespace", options.RepositoryInterfaceNamespace },
-            { "Namespace", options.RepositoryNamespace },
+            { "RepositoryInterfaceNamespace", options.RepositoriesInterfaceNamespace },
+            { "Namespace", options.RepositoriesNamespace },
             { "TableName", table.TableName },
             { "SelectAllRequest", sqlGenerator.GenerateSelectAll(table) },
             { "SelectByIdRequest", sqlGenerator.GenerateSelectById(table) },
