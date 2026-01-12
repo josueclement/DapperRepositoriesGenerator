@@ -12,13 +12,11 @@ var tables = new[]
 var basePath = @"<your_path>";
 Directory.CreateDirectory(basePath);
         
-var repositoriesInterfaceNamespace = "EventManager.Application.Interfaces.Repositories";
-var repositoriesNamespace = "EventManager.Infrastructure.Database.Repositories";
-var servicesInterfaceNamespace = "EventManager.Application.Interfaces.Services";
-var servicesNamespace = "EventManager.Infrastructure.Database.Services";
-var entitiesNamespace = "EventManager.Domain.Entities";
-
-
+var repositoriesInterfaceNamespace = "MyApp.Application.Interfaces.Database.Repositories";
+var repositoriesNamespace = "MyApp.Infrastructure.Database.Repositories";
+var servicesInterfaceNamespace = "MyApp.Application.Interfaces.Database.Services";
+var servicesNamespace = "MyApp.Application.Database.Services";
+var entitiesNamespace = "MyApp.Domain.Entities";
 
 var filesGenerator = new FilesGenerator()
     .SetSqlGeneratorOptions(options =>
