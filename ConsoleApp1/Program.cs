@@ -16,40 +16,39 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        var id = "Id";
-        var test = id[..1].ToLower() + id[1..];
+        DbProviderFactories.RegisterFactory(
+            "System.Data.SQLite",
+            "System.Data.SQLite.SQLiteFactory, System.Data.SQLite");
         // await GenerateEventManager();
-        // await GenerateEntities();
         await GenerateUsers();
+        GenerateTables();
+    }
+    
+    static DbConnection GetConnection()
+    {
+        var connection = DbProviderFactories.GetFactory("System.Data.SQLite").CreateConnection()
+                         ?? throw new InvalidOperationException("Could not create database connection.");
+        connection.ConnectionString = @"Data Source=C:\Temp\TestDB\test.sqlite";
+        return connection;
     }
 
-    static async Task GenerateEntities()
+    static void GenerateTables()
     {
-        var tables = new[]
-        {
-            new DbTable("User", ["Id", "CreationDate", "ModificationDate", "Username", "FullName", "Group", "Password"]),
-            new DbTable("Group", ["Id", "CreationDate", "ModificationDate", "Name", "Description"]),
-        };
+        var generator = new DbTableGenerator(GetConnection);
+        var tables = generator.Generate("User", "Group");
 
-        var SqlGenerator = new SqlGenerator(new SqlGeneratorOptions());
-        foreach (var table in tables)
-            Console.WriteLine(SqlGenerator.GenerateCreateTableScript(table));
-
-        // var entityGenerator = new EntityGenerator(new EntityGeneratorOptions
-        // {
-        //     GenerateNotifyProperties = true
-        // });
-        // var res = entityGenerator.GenerateEntity(tables.First());
-        // Console.WriteLine(res);
     }
 
     static async Task GenerateUsers()
     {
-        var tables = new[]
-        {
-            new DbTable("User", ["Tata", "CreationDate", "ModificationDate", "Username", "FullName", "Group", "Password"]),
-            new DbTable("Group", ["Toto", "CreationDate", "ModificationDate", "Name", "Description"]),
-        };
+        var generator = new DbTableGenerator(GetConnection);
+        var tables = generator.Generate("User", "Group").ToArray();
+        
+        // var tables = new[]
+        // {
+        //     new DbTable("User", ["Id", "CreationDate", "ModificationDate", "Username", "FullName", "Group", "Password"]),
+        //     new DbTable("Group", ["Id", "CreationDate", "ModificationDate", "Name", "Description"]),
+        // };
         
         // var repositoriesInterfaceNamespace = "EventManager.Application.Interfaces.Repositories";
         // var repositoriesNamespace = "EventManager.Infrastructure.Database.Repositories";
@@ -71,7 +70,8 @@ class Program
             .GenerateServices(
                 interfacesPath: basePath,
                 implementationsPath: basePath)
-            .GenerateEntities(basePath);
+            .GenerateEntities(basePath)
+            .GenerateSqlCreationScript(basePath);
 
         await filesGenerator.GenerateFilesAsync(tables);
     }
