@@ -10,20 +10,6 @@ public class RepositoryGenerator(
     SqlGenerator sqlGenerator,
     RepositoryGeneratorOptions options)
 {
-    public string GenerateRepositoryGenericInterface()
-    {
-        using var repositoryTemplateStream = AssemblyHelper.GetEmbeddedStream("DapperRepositoriesGenerator.Templates.IRepositoryGenericTemplate.txt");
-        using var reader = new StreamReader(repositoryTemplateStream, Encoding.UTF8);
-        var templateContent = reader.ReadToEnd();
-
-        var scriptObject = new ScriptObject
-        {
-            { "Namespace", options.RepositoryInterfaceNamespace }
-        };
-        
-        return ScribanHelper.RenderTemplate(templateContent, scriptObject);
-    }
-
     public string GenerateRepositoryInterface(DbTable table)
     {
         using var repositoryTemplateStream = AssemblyHelper.GetEmbeddedStream("DapperRepositoriesGenerator.Templates.IRepositoryTemplate.txt");
@@ -34,7 +20,11 @@ public class RepositoryGenerator(
         {
             { "Namespace", options.RepositoryInterfaceNamespace },
             { "EntitiesNamespace", options.EntitiesNamespace },
-            { "TableName", table.TableName }
+            { "TableName", table.TableName },
+            { "IdColumnName", GetIdColumn(table) },
+            { "IdParameterName", GetIdParameter(table) },
+            { "IdTypeName", GetIdTypeName(table) },
+            { "TableParameterName", GetTableParameter(table) }
         };
         
         return ScribanHelper.RenderTemplate(templateContent, scriptObject);
@@ -59,7 +49,8 @@ public class RepositoryGenerator(
             { "DeleteRequest", sqlGenerator.GenerateDelete(table) },
             { "IdColumnName", GetIdColumn(table) },
             { "IdParameterName", GetIdParameter(table) },
-            { "IdTypeName", GetIdTypeName(table) }
+            { "IdTypeName", GetIdTypeName(table) },
+            { "TableParameterName", GetTableParameter(table) }
         };
 
         return ScribanHelper.RenderTemplate(templateContent, scriptObject);
@@ -76,4 +67,7 @@ public class RepositoryGenerator(
 
     private string GetIdTypeName(DbTable table)
         => table.Columns.First().typeName;
+
+    private string GetTableParameter(DbTable table)
+        => table.TableName.Substring(0, 1).ToLower() + table.TableName.Substring(1);
 }

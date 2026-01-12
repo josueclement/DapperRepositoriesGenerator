@@ -51,54 +51,54 @@ public class {{ TableName }}Repository(Func<DbConnection> connectionFactory) : I
             .ConfigureAwait(false);
     }
 
-    public async Task<int> AddAsync({{ TableName }} obj)
+    public async Task<int> AddAsync({{ TableName }} {{ TableParameterName }})
     {
         await using var connection = connectionFactory();
         await connection.OpenAsync().ConfigureAwait(false);
         
         return await connection
-            .ExecuteAsync(AddSql, obj)
+            .ExecuteAsync(AddSql, {{ TableParameterName }})
             .ConfigureAwait(false);
     }
 
-    public async Task<int> AddAsync({{ TableName }} obj, IDbConnection connection, IDbTransaction transaction)
+    public async Task<int> AddAsync({{ TableName }} {{ TableParameterName }}, IDbConnection connection, IDbTransaction transaction)
     {
         return await connection
-            .ExecuteAsync(AddSql, obj, transaction)
+            .ExecuteAsync(AddSql, {{ TableParameterName }}, transaction)
             .ConfigureAwait(false);
     }
 
-    public async Task<int> UpdateAsync({{ TableName }} obj)
-    {
-        await using var connection = connectionFactory();
-        await connection.OpenAsync().ConfigureAwait(false);
-        
-        return await connection
-            .ExecuteAsync(UpdateSql, obj)
-            .ConfigureAwait(false);
-    }
-
-    public async Task<int> UpdateAsync({{ TableName }} obj, IDbConnection connection, IDbTransaction transaction)
-    {
-        return await connection
-            .ExecuteAsync(UpdateSql, obj, transaction)
-            .ConfigureAwait(false);
-    }
-
-    public async Task<int> DeleteAsync({{ TableName }} obj)
+    public async Task<int> UpdateAsync({{ TableName }} {{ TableParameterName }})
     {
         await using var connection = connectionFactory();
         await connection.OpenAsync().ConfigureAwait(false);
         
         return await connection
-            .ExecuteAsync(DeleteSql, obj)
+            .ExecuteAsync(UpdateSql, {{ TableParameterName }})
             .ConfigureAwait(false);
     }
 
-    public async Task<int> DeleteAsync({{ TableName }} obj, IDbConnection connection, IDbTransaction transaction)
+    public async Task<int> UpdateAsync({{ TableName }} {{ TableParameterName }}, IDbConnection connection, IDbTransaction transaction)
     {
         return await connection
-            .ExecuteAsync(DeleteSql, obj, transaction)
+            .ExecuteAsync(UpdateSql, {{ TableParameterName }}, transaction)
+            .ConfigureAwait(false);
+    }
+
+    public async Task<int> DeleteAsync({{ TableName }} {{ TableParameterName }})
+    {
+        await using var connection = connectionFactory();
+        await connection.OpenAsync().ConfigureAwait(false);
+        
+        return await connection
+            .ExecuteAsync(DeleteSql, {{ TableParameterName }})
+            .ConfigureAwait(false);
+    }
+
+    public async Task<int> DeleteAsync({{ TableName }} {{ TableParameterName }}, IDbConnection connection, IDbTransaction transaction)
+    {
+        return await connection
+            .ExecuteAsync(DeleteSql, {{ TableParameterName }}, transaction)
             .ConfigureAwait(false);
     }
 }

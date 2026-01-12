@@ -99,9 +99,6 @@ public class FilesGenerator
     {
         var sqlSb = new StringBuilder();
         
-        await GenerateRepositoryGenericInterface().ConfigureAwait(false);
-        await GenerateServiceGenericInterface().ConfigureAwait(false);
-
         foreach (var table in tables)
         {
             await GenerateRepositoryInterface(table).ConfigureAwait(false);
@@ -113,31 +110,6 @@ public class FilesGenerator
         }
 
         await GenerateScriptFile(sqlSb).ConfigureAwait(false);
-    }
-
-    private async Task GenerateRepositoryGenericInterface()
-    {
-        if (_generateRepositoriesBaseInterface is true && _repositoriesInterfacesPath is not null)
-        {
-            var filePath = Path.Combine(_repositoriesInterfacesPath, "IRepository.cs");
-            using var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
-            //TODO: add FilesGeneratorOptions with SqlFilesEncoding and CsharpFilesEncoding
-            using var writer = new StreamWriter(fs, Encoding.UTF8);
-            var content = _repositoryGenerator.GenerateRepositoryGenericInterface();
-            await writer.WriteAsync(content).ConfigureAwait(false);
-        }
-    }
-
-    private async Task GenerateServiceGenericInterface()
-    {
-        if (_generateServicesBaseInterface is true && _servicesInterfacesPath is not null)
-        {
-            var filePath = Path.Combine(_servicesInterfacesPath, "IService.cs");
-            using var fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
-            using var writer = new StreamWriter(fs, Encoding.UTF8);
-            var content = _serviceGenerator.GenerateServiceGenericInterface();
-            await writer.WriteAsync(content).ConfigureAwait(false);
-        }
     }
 
     private async Task GenerateRepositoryInterface(DbTable table)

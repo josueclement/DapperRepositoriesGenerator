@@ -1,5 +1,14 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using {{ EntitiesNamespace }};
 
 namespace {{ Namespace }};
 
-public interface I{{ TableName }}Service : IService<{{ TableName }}>;
+public interface I{{ TableName }}Service
+{
+    Task<IEnumerable<{{ TableName }}>> GetAllAsync();
+    Task<{{ TableName }}?> GetByIdAsync({{ IdTypeName }} {{ IdParameterName }});
+    Task<bool> AddAsync({{ TableName }} {{ TableParameterName }});
+    Task<bool> UpdateAsync({{ TableName }} {{ TableParameterName }});
+    Task<bool> DeleteAsync({{ TableName }} {{ TableParameterName }});
+}

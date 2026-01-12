@@ -47,8 +47,8 @@ class Program
     {
         var tables = new[]
         {
-            new DbTable("User", ["Id", "CreationDate", "ModificationDate", "Username", "FullName", "Group", "Password"]),
-            new DbTable("Group", ["Id", "CreationDate", "ModificationDate", "Name", "Description"]),
+            new DbTable("User", ["Tata", "CreationDate", "ModificationDate", "Username", "FullName", "Group", "Password"]),
+            new DbTable("Group", ["Toto", "CreationDate", "ModificationDate", "Name", "Description"]),
         };
         
         // var repositoriesInterfaceNamespace = "EventManager.Application.Interfaces.Repositories";
@@ -57,7 +57,8 @@ class Program
         // var servicesNamespace = "EventManager.Infrastructure.Database.Services";
         // var entitiesNamespace = "EventManager.Domain.Entities";
 
-        var basePath = "/home/jo/Dev/DapperRepositoriesGenerator/ConsoleApp1/Generated/";
+        var basePath = @"C:\Dev\JCL\DapperRepositoriesGenerator\ConsoleApp1\Generated";//"/home/jo/Dev/DapperRepositoriesGenerator/ConsoleApp1/Generated/";
+        Directory.CreateDirectory(basePath);
 
         var filesGenerator = new FilesGenerator()
             .SetSqlGeneratorOptions(options => { })

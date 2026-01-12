@@ -1,5 +1,20 @@
 using {{ EntitiesNamespace }};
+using System.Collections.Generic;
+using System.Data;
+using System.Threading.Tasks;
 
 namespace {{ Namespace }};
 
-public interface I{{ TableName }}Repository : IRepository<{{ TableName }}>;
+public interface I{{ TableName }}Repository
+{
+    Task<IEnumerable<{{ TableName }}>> GetAllAsync();
+    Task<IEnumerable<{{ TableName }}>> GetAllAsync(IDbConnection connection, IDbTransaction transaction);
+    Task<{{ TableName }}?> GetByIdAsync({{ IdTypeName }} {{ IdParameterName }});
+    Task<{{ TableName }}?> GetByIdAsync({{ IdTypeName }} {{ IdParameterName }}, IDbConnection connection, IDbTransaction transaction);
+    Task<int> AddAsync({{ TableName }} {{ TableParameterName }});
+    Task<int> AddAsync({{ TableName }} {{ TableParameterName }}, IDbConnection connection, IDbTransaction transaction);
+    Task<int> UpdateAsync({{ TableName }} {{ TableParameterName }});
+    Task<int> UpdateAsync({{ TableName }} {{ TableParameterName }}, IDbConnection connection, IDbTransaction transaction);
+    Task<int> DeleteAsync({{ TableName }} {{ TableParameterName }});
+    Task<int> DeleteAsync({{ TableName }} {{ TableParameterName }}, IDbConnection connection, IDbTransaction transaction);
+}
