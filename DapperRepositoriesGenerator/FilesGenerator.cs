@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,8 +21,6 @@ public class FilesGenerator
     private string? _repositoriesImplementationsPath;
     private string? _servicesInterfacesPath;
     private string? _servicesImplementationsPath;
-    private bool? _generateRepositoriesBaseInterface;
-    private bool? _generateServicesBaseInterface;
 
     public FilesGenerator()
     {
@@ -80,7 +77,6 @@ public class FilesGenerator
     {
         _repositoriesInterfacesPath = interfacesPath;
         _repositoriesImplementationsPath = implementationsPath;
-        _generateRepositoriesBaseInterface = generateBaseInterface;
         return this;
     }
 
@@ -91,7 +87,6 @@ public class FilesGenerator
     {
         _servicesInterfacesPath = interfacesPath;
         _servicesImplementationsPath = implementationsPath;
-        _generateServicesBaseInterface = generateBaseInterface;
         return this;
     }
 
