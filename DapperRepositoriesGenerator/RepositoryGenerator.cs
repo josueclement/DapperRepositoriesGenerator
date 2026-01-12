@@ -21,10 +21,10 @@ public class RepositoryGenerator(
             { "Namespace", options.RepositoryInterfaceNamespace },
             { "EntitiesNamespace", options.EntitiesNamespace },
             { "TableName", table.TableName },
-            { "IdColumnName", GetIdColumn(table) },
-            { "IdParameterName", GetIdParameter(table) },
-            { "IdTypeName", GetIdTypeName(table) },
-            { "TableParameterName", GetTableParameter(table) }
+            { "IdColumnName", table.GetIdColumnName() },
+            { "IdParameterName", table.GetIdParameterName() },
+            { "IdTypeName", table.GetIdTypeName() },
+            { "TableParameterName", table.GetTableParameterName() }
         };
         
         return ScribanHelper.RenderTemplate(templateContent, scriptObject);
@@ -47,27 +47,12 @@ public class RepositoryGenerator(
             { "InsertRequest", sqlGenerator.GenerateInsert(table) },
             { "UpdateRequest", sqlGenerator.GenerateUpdate(table) },
             { "DeleteRequest", sqlGenerator.GenerateDelete(table) },
-            { "IdColumnName", GetIdColumn(table) },
-            { "IdParameterName", GetIdParameter(table) },
-            { "IdTypeName", GetIdTypeName(table) },
-            { "TableParameterName", GetTableParameter(table) }
+            { "IdColumnName", table.GetIdColumnName() },
+            { "IdParameterName", table.GetIdParameterName() },
+            { "IdTypeName", table.GetIdTypeName() },
+            { "TableParameterName", table.GetTableParameterName() }
         };
 
         return ScribanHelper.RenderTemplate(templateContent, scriptObject);
     }
-    
-    private string GetIdColumn(DbTable table)
-        => table.ColumnNames.First();
-
-    private string GetIdParameter(DbTable table)
-    {
-        var id = GetIdColumn(table);
-        return id.Substring(0, 1).ToLower() + id.Substring(1);
-    }
-
-    private string GetIdTypeName(DbTable table)
-        => table.Columns.First().typeName;
-
-    private string GetTableParameter(DbTable table)
-        => table.TableName.Substring(0, 1).ToLower() + table.TableName.Substring(1);
 }

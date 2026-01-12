@@ -15,7 +15,7 @@ public class SqlGenerator(SqlGeneratorOptions options)
         foreach (var columnName in table.ColumnNames)
             sb.AppendLine($"    {options.Quote}{columnName}{options.Quote} TEXT,");
         
-        sb.AppendLine($"    PRIMARY KEY({options.Quote}{GetIdColumn(table)}{options.Quote})");
+        sb.AppendLine($"    PRIMARY KEY({options.Quote}{table.GetIdColumnName()}{options.Quote})");
         sb.AppendLine(");");
         
         return sb.ToString();
@@ -39,9 +39,6 @@ public class SqlGenerator(SqlGeneratorOptions options)
     private string GetQuotedColumns(DbTable table)
         => string.Join(", ", table.ColumnNames.Select(c => $"{options.Quote}{c}{options.Quote}"));
     
-    private string GetIdColumn(DbTable table)
-        => table.ColumnNames.First();
-    
     private string GetParameters(DbTable table)
         => string.Join(", ", table.ColumnNames.Select(c => $"{options.ParameterPrefix}{c}"));
     
@@ -49,5 +46,5 @@ public class SqlGenerator(SqlGeneratorOptions options)
         => string.Join(", ", table.ColumnNames.Skip(1).Select(c => $"{options.Quote}{c}{options.Quote} = {options.ParameterPrefix}{c}"));
     
     private string GetWhereId(DbTable table)
-        => $"WHERE {options.Quote}{GetIdColumn(table)}{options.Quote} = {options.ParameterPrefix}{GetIdColumn(table)}";
+        => $"WHERE {options.Quote}{table.GetIdColumnName()}{options.Quote} = {options.ParameterPrefix}{table.GetIdColumnName()}";
 }
