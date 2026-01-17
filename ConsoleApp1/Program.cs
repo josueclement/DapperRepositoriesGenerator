@@ -19,9 +19,9 @@ class Program
         DbProviderFactories.RegisterFactory(
             "System.Data.SQLite",
             "System.Data.SQLite.SQLiteFactory, System.Data.SQLite");
-        // await GenerateEventManager();
-        await GenerateUsers();
-        GenerateTables();
+        await GenerateEventManager();
+        // await GenerateUsers();
+        // GenerateTables();
     }
     
     static DbConnection GetConnection()
@@ -87,10 +87,10 @@ class Program
             new DbTable("Volunteer", ["Id", "CreationDate", "ModificationDate", "Name", "Contact", "Description"])
         };
         
-        var repositoriesInterfaceNamespace = "EventManager.Application.Interfaces.Repositories";
+        var repositoriesInterfaceNamespace = "EventManager.Application.Interfaces.Database.Repositories";
         var repositoriesNamespace = "EventManager.Infrastructure.Database.Repositories";
-        var servicesInterfaceNamespace = "EventManager.Application.Interfaces.Services";
-        var servicesNamespace = "EventManager.Infrastructure.Database.Services";
+        var servicesInterfaceNamespace = "EventManager.Application.Interfaces.Database.Services";
+        var servicesNamespace = "EventManager.Application.Database.Services";
         var entitiesNamespace = "EventManager.Domain.Entities";
 
         var basePath = "/home/jo/Dev/EventManager/";
@@ -119,11 +119,11 @@ class Program
                 options.EntitiesNamespace = entitiesNamespace;
             })
             .GenerateRepositories(
-                interfacesPath: Path.Combine(basePath, "EventManager.Application", "Interfaces", "Repositories"),
+                interfacesPath: Path.Combine(basePath, "EventManager.Application", "Interfaces", "Database", "Repositories"),
                 implementationsPath: Path.Combine(basePath, "EventManager.Infrastructure", "Database", "Repositories"))
             .GenerateServices(
-                interfacesPath: Path.Combine(basePath, "EventManager.Application", "Interfaces", "Services"),
-                implementationsPath: Path.Combine(basePath, "EventManager.Infrastructure", "Database", "Services"))
+                interfacesPath: Path.Combine(basePath, "EventManager.Application", "Interfaces", "Database", "Services"),
+                implementationsPath: Path.Combine(basePath, "EventManager.Application", "Database", "Services"))
             .GenerateEntities(Path.Combine(basePath, "EventManager.Domain", "Entities"))
             .GenerateSqlCreationScript(Path.Combine(basePath, "EventManager.Infrastructure", "Database"));
 
